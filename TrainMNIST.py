@@ -12,6 +12,10 @@ from bases.Models import SimpleNet
 from bases.Losses import MarginInnerProduct
 from Tools import ModelSaver
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 def visualize(feat, labels, epoch):
     plt.ion()
     c = ['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff',
