@@ -27,7 +27,7 @@ def visualize(feat, labels, epoch):
     #   plt.xlim(xmin=-5,xmax=5)
     #   plt.ylim(ymin=-5,ymax=5)
     plt.text(-4.8, 4.6, "epoch=%d" % epoch)
-    plt.savefig('./images/softmax_loss_epoch=%d.jpg' % epoch)
+    plt.savefig('./images/softmax_loss_epoch=%d.jpg' % epoch,format='eps')
     plt.close()
 
 
