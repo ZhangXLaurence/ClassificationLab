@@ -128,6 +128,7 @@ class MetricLogits(nn.Module):
         w2f = torch.matmul(w2, Variable(torch.ones(1, ip.size(0))).cuda())
         metric2_logit = f2w + torch.transpose(w2f,0,1) - 2 * ip
         metric = torch.sqrt(metric2_logit)
+        
         ############################## Norm ##############################
         # avg_w_norm = (sum(norm_weights)/len(norm_weights)).item()
         # avg_x_norm = (sum(norm_features)/len(norm_features)).item()
@@ -144,10 +145,14 @@ class MetricLogits(nn.Module):
         min_distance = min(distances) 
         avg_distance = get_average(distances)
         stdv_distance = get_stddev(distances)
+        
         # print('Now stdv of distances is {:.4f}'.format(stdv_distance))
         # print('Now average distance is {:.2f}, max distance is {:.2f}, min distance is {:.2f}'.format(avg_distance, max_distance, min_distance))
         ############################## Theta ##############################
         # Calculate logits
+        std_metric = (metric - avg_distance)/stdv_distance
+
+
         valuation_logits = metric
         train_logits = metric
         return valuation_logits, train_logits
