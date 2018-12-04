@@ -22,7 +22,7 @@ def visualize(feat, labels, epoch):
          '#ff00ff', '#990000', '#999900', '#009900', '#009999']
     plt.clf()
     for i in range(10):
-        plt.plot(feat[labels == i, 0], feat[labels == i, 1], '.', c=c[i])
+        plt.plot(feat[labels == i, 0], feat[labels == i, 1], '.', c=c[i], linewidth=1)
     plt.legend(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], loc='upper right')
     plt.text(-4.8, 4.6, "epoch=%d" % epoch)
     plt.savefig('./images/softmax_loss_epoch=%d.eps' % epoch,format='eps')
