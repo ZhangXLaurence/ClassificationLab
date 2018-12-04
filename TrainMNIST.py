@@ -76,7 +76,7 @@ def Train(train_loader, model, criterion, optimizer, epoch, info_interval):
         feats, valuation_logits, train_logits = model(data, target)
         loss = criterion[0](train_logits, target)
 
-        _, predicted = torch.max(train_logits.data, 1)
+        _, predicted = torch.max(evaluation_logits.data, 1)
         accuracy = (target.data == predicted).float().mean()
 
         optimizer[0].zero_grad()
