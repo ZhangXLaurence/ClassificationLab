@@ -24,8 +24,6 @@ def visualize(feat, labels, epoch):
     for i in range(10):
         plt.plot(feat[labels == i, 0], feat[labels == i, 1], '.', c=c[i])
     plt.legend(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], loc='upper right')
-    #   plt.xlim(xmin=-5,xmax=5)
-    #   plt.ylim(ymin=-5,ymax=5)
     plt.text(-4.8, 4.6, "epoch=%d" % epoch)
     plt.savefig('./images/softmax_loss_epoch=%d.eps' % epoch,format='eps')
     plt.close()
@@ -42,8 +40,8 @@ class TrainingModel(nn.Module):
         self.inner_product = inner_product
     def forward(self, x, label):
         features = self.inference_model(x)
-        # logits = self.inner_product(features, label)
-        logits = self.inner_product(features)
+        logits = self.inner_product(features, label)
+        # logits = self.inner_product(features)
         return features, logits
     def SaveInferenceModel():
         # TO BE DOWN
