@@ -104,6 +104,64 @@ class InnerProductWithScaleButNoUse(nn.Module):
 
 
 
+
+
+class MetricLogits(nn.Module):
+    def __init__(self, feature_dim, class_num):
+        super(MetricLogits, self).__init__()
+        self.feature_dim = feature_dim
+        self.class_num = class_num
+        self.weights = nn.Parameter(torch.FloatTensor(class_num, feature_dim))
+        nn.init.xavier_uniform_(self.weights)
+
+    def forward(self, feat, label):
+        # Unit vector for features
+        # norm_features = torch.norm(feat, p=2, dim=-1, keepdim=True)
+        # normalized_features = torch.div(feat, norm_features)
+        # Unit vector for weights
+        # norm_weights = torch.norm(self.weights, p=2, dim=-1, keepdim=True)
+        # normalized_weights = torch.div(self.weights, norm_weights)
+        # Normalized inner product, or cosine
+        # cos = torch.matmul(normalized_features, torch.transpose(normalized_weights, 0, 1))
+        
+        ip = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
+        f2 = torch.norm(feat, p=2, dim=1, keepdim=True)
+        w2 = torch.norm(self.weights, p=2, dim=1, keepdim=True)
+        f2w = torch.matmul(f2, torch.ones(1, self.class_num))
+        w2f = torch.matmul(w2, torch.ones(1, ip.size(0)))
+        metric2_logit = f2w + torch.transpose(w2f,0,1) - 2 * ip
+        metric = torch.sqrt(metric2_logit)
+        ############################## Norm ##############################
+        # avg_w_norm = (sum(norm_weights)/len(norm_weights)).item()
+        # avg_x_norm = (sum(norm_features)/len(norm_features)).item()
+        # print('Avg weight norm is {:.6f}, avg feature norm i {:.6f}'.format(avg_w_norm, avg_x_norm))
+        ############################## Norm ##############################
+        ############################## Theta ##############################
+        distances = []
+        for i in range(metric.size(0)):
+            label_i = int(label[i])
+            # print(cos[i, label_i])
+            distance = metric[i, label_i].item()
+            distances.append(distance)
+        max_distance = max(distances)
+        min_distance = min(distances) 
+        avg_distance = get_average(distances)
+        stdv_distance = get_stddev(distances)
+        print('Now stdv of distances is {:.4f}'.format(stdv_distance))
+        print('Now average distance is {:.2f}, max distance is {:.2f}, min distance is {:.2f}'.format(avg_distance, max_distance, min_distance))
+        ############################## Theta ##############################
+        # Calculate logits
+        valuation_logits = metric
+        train_logits = metric
+        return valuation_logits, train_logits
+
+
+
+
+
+
+
+
 class NormalizedInnerProductWithScale(nn.Module):
     """
     Paper:[COCOv2]
