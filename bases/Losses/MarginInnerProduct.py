@@ -124,11 +124,12 @@ class MetricLogits(nn.Module):
         ip = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
         f2 = torch.norm(feat, p=2, dim=1, keepdim=True)
         w2 = torch.norm(self.weights, p=2, dim=1, keepdim=True)
-        f2w = torch.matmul(f2, Variable(torch.ones(1, self.class_num)).cuda())
-        w2f = torch.matmul(w2, Variable(torch.ones(1, ip.size(0))).cuda())
+        f2w = torch.matmul(f2, (torch.ones(1, self.class_num)).cuda())
+        w2f = torch.matmul(w2, (torch.ones(1, ip.size(0))).cuda())
         metric2_logit = f2w + torch.transpose(w2f,0,1) - 2 * ip
         metric = torch.sqrt(metric2_logit)
         
+        # for i in range(ip.size(0)):
         ############################## Norm ##############################
         # avg_w_norm = (sum(norm_weights)/len(norm_weights)).item()
         # avg_x_norm = (sum(norm_features)/len(norm_features)).item()
