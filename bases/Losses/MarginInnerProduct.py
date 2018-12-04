@@ -97,9 +97,9 @@ class InnerProductWithScaleButNoUse(nn.Module):
         # print('Now average theta is {:.2f}, max theta is {:.2f}, min theta is {:.2f}'.format(avg_theta, max_theta, min_theta))
         ############################## Theta ##############################
         # Calculate logits
-        evaluation_logits = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
-        train_logits = evaluation_logits
-        return evaluation_logits, train_logits
+        valuation_logits = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
+        train_logits = valuation_logits
+        return valuation_logits, train_logits
 
 
 
