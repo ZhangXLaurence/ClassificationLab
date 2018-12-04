@@ -27,7 +27,7 @@ def visualize(feat, labels, epoch):
     #   plt.xlim(xmin=-5,xmax=5)
     #   plt.ylim(ymin=-5,ymax=5)
     plt.text(-4.8, 4.6, "epoch=%d" % epoch)
-    plt.savefig('./images/softmax_loss_epoch=%d.jpg' % epoch,format='eps')
+    plt.savefig('./images/softmax_loss_epoch=%d.eps' % epoch,format='eps')
     plt.close()
 
 
@@ -149,7 +149,8 @@ def main():
     # Inference Model Constructing
     Inference = SimpleNet.SmallNet(feature_dim=arg_FeatureDim)
     # Innerproduct Construction
-    InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
+    # InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
+    InnerProduct = MarginInnerProduct.InnerProductWithScaleButNoUse(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.ArcFaceInnerProduct(arg_FeatureDim, arg_classNum, scale=7.0, margin=0.35)
     Model = torch.nn.DataParallel(TrainingModel(Inference, InnerProduct), arg_DeviceIds)
 
