@@ -107,7 +107,7 @@ class InnerProductWithScaleButNoUse(nn.Module):
         # Calculate logits
         logits = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
 
-        return cos, logits, avg_theta, min_theta, max_theta, stdv_theta, avg_w_norm, avg_x_norm
+        return logits
 
 
 
