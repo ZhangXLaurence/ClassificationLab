@@ -155,7 +155,7 @@ class MetricLogits(nn.Module):
 
 
         valuation_logits = metric
-        train_logits = 100 * metric
+        train_logits = 50 * metric
         return valuation_logits, train_logits
 
 
