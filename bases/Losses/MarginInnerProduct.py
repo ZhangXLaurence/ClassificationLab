@@ -144,8 +144,8 @@ class MetricLogits(nn.Module):
         min_distance = min(distances) 
         avg_distance = get_average(distances)
         stdv_distance = get_stddev(distances)
-        print('Now stdv of distances is {:.4f}'.format(stdv_distance))
-        print('Now average distance is {:.2f}, max distance is {:.2f}, min distance is {:.2f}'.format(avg_distance, max_distance, min_distance))
+        # print('Now stdv of distances is {:.4f}'.format(stdv_distance))
+        # print('Now average distance is {:.2f}, max distance is {:.2f}, min distance is {:.2f}'.format(avg_distance, max_distance, min_distance))
         ############################## Theta ##############################
         # Calculate logits
         valuation_logits = metric
