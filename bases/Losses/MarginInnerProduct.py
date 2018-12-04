@@ -103,9 +103,6 @@ class InnerProductWithScaleButNoUse(nn.Module):
 
 
 
-
-
-
 class MetricLogits(nn.Module):
     def __init__(self, feature_dim, class_num):
         super(MetricLogits, self).__init__()
