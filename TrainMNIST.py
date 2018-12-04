@@ -91,7 +91,7 @@ def Train(train_loader, model, criterion, optimizer, epoch, info_interval):
         
     feat = torch.cat(ip1_loader, 0)
     labels = torch.cat(idx_loader, 0)
-    # visualize(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
+    visualize(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
     
 
 def Processing(NumEpoch, LrScheduler, Optimizer, train_loader, test_loder, model, criterion, info_interval, save_path):
@@ -126,8 +126,8 @@ def main():
     arg_TrainBatchSize = 32
     arg_TestBatchSize = 1024
 
+    arg_FeatureDim = 2
     # arg_FeatureDim = 32
-    arg_FeatureDim = 32
     arg_classNum = 10
     
     # Learning rate arg
