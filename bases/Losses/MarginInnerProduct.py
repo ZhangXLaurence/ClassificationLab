@@ -127,7 +127,8 @@ class MetricLogits(nn.Module):
         f2w = torch.matmul(f2, (torch.ones(1, self.class_num)).cuda())
         w2f = torch.matmul(w2, (torch.ones(1, ip.size(0))).cuda())
         metric2_logit = f2w + torch.transpose(w2f,0,1) - 2 * ip
-        metric = torch.sqrt(metric2_logit)
+        # metric = torch.sqrt(metric2_logit)
+        metric = metric2_logit
         
         # for i in range(ip.size(0)):
         ############################## Norm ##############################
@@ -155,7 +156,7 @@ class MetricLogits(nn.Module):
 
 
         valuation_logits = metric
-        train_logits = 50 * metric
+        train_logits = 20 * metric
         return valuation_logits, train_logits
 
 
