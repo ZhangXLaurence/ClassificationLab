@@ -87,7 +87,7 @@ class InnerProductWithScaleButNoUse(nn.Module):
         thetas = []
         for i in range(cos.size(0)):
             label_i = int(label[i])
-            print(cos[i, label_i])
+            # print(cos[i, label_i])
             theta = math.acos(torch.clamp(cos[i, label_i], -1, 1).item()) #/ math.pi * 180  # degree
             thetas.append(theta)
         max_theta = max(thetas)
