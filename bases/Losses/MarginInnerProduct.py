@@ -81,19 +81,18 @@ class InnerProductWithScaleButNoUse(nn.Module):
         ############################## Norm ##############################
         avg_w_norm = (sum(norm_weights)/len(norm_weights)).item()
         avg_x_norm = (sum(norm_features)/len(norm_features)).item()
-        print('Avg weight norm is {:.6f}, avg feature norm i {:.6f}'.format(avg_w_norm, avg_x_norm))
+        # print('Avg weight norm is {:.6f}, avg feature norm i {:.6f}'.format(avg_w_norm, avg_x_norm))
         ############################## Norm ##############################
         ############################## Theta ##############################
         thetas = []
         for i in range(cos.size(0)):
             label_i = int(label[i])
-            theta = math.acos(cos[i, label_i].data[0]) / math.pi * 180  # degree
+            theta = math.acos(cos[i, label_i].data[0]) #/ math.pi * 180  # degree
             thetas.append(theta)
         max_theta = max(thetas)
         min_theta = min(thetas) 
         avg_theta = get_average(thetas)
-        stdv_theta = get_stddev(thetas)
-        print('Now stdv of thetas is {:.4f}'.format(stdv_theta))
+        # print('Now stdv of thetas is {:.4f}'.format(stdv_theta))
         # print('Now average theta is {:.2f}, max theta is {:.2f}, min theta is {:.2f}'.format(avg_theta, max_theta, min_theta))
         ############################## Theta ##############################
         # Calculate logits
