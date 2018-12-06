@@ -172,12 +172,12 @@ class MetricLogits(nn.Module):
         # Calculate logits
         metric_mean = torch.mean(metric).item()
         metric_stdv = math.sqrt(torch.var(metric).item())
-        std_metric = (metric - metric_mean) / metric_stdv
-        print('Now average pos. dist. and all avg. are {:.4f} and {:.4f}'.format(avg_distance, metric_mean))
-        print('Now average stdv.  and all stdv. are {:.4f} and {:.4f}'.format(stdv_distance, metric_stdv))
+        # std_metric = (metric - metric_mean) / metric_stdv
+        # print('Now average pos. dist. and all avg. are {:.4f} and {:.4f}'.format(avg_distance, metric_mean))
+        # print('Now average stdv.  and all stdv. are {:.4f} and {:.4f}'.format(stdv_distance, metric_stdv))
 
 
-        valuation_logits = - std_metric
+        valuation_logits = -1.0 * metric
         # train_logits = 100 * std_metric
         train_logits = -1.0 * metric
         return valuation_logits, train_logits
