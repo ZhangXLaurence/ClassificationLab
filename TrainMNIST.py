@@ -126,8 +126,8 @@ def main():
     arg_TrainBatchSize = 32
     arg_TestBatchSize = 1024
 
-    arg_FeatureDim = 2
-    # arg_FeatureDim = 32
+    # arg_FeatureDim = 2
+    arg_FeatureDim = 32
     arg_classNum = 10
     
     # Learning rate arg
