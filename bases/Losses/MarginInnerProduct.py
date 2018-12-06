@@ -133,8 +133,8 @@ class MetricLogits(nn.Module):
         f2 = torch.sum(f2, 1, keepdim=True)
         w2 = torch.pow(self.weights, 2)
         w2 = torch.sum(w2, 1, keepdim=True)
-        f2w = torch.matmul(f2, (torch.ones(1, ip.size(1))).cuda())
-        w2f = torch.matmul(w2, (torch.ones(1, ip.size(0))).cuda())
+        f2w = torch.matmul(f2, (torch.ones(1, ip.size(1), requires_grad=True)).cuda())
+        w2f = torch.matmul(w2, (torch.ones(1, ip.size(0), requires_grad=True)).cuda())
         # metric2_logit = f2w + torch.transpose(w2f,0,1) - 2 * ip
         part1 = torch.add(f2w, 1, torch.transpose(w2f,0,1))
         metric2_logit = torch.add(part1, -2, ip)
