@@ -170,12 +170,12 @@ class MetricLogits(nn.Module):
         # print('Now average distance is {:.2f}, max distance is {:.2f}, min distance is {:.2f}'.format(avg_distance, max_distance, min_distance))
         ############################## Theta ##############################
         # Calculate logits
-        # std_metric = (metric - avg_distance) / stdv_distance
+        std_metric = (metric - avg_distance) / stdv_distance
 
 
-        valuation_logits = 100.0 - metric
+        valuation_logits = - std_metric
         # train_logits = 100 * std_metric
-        train_logits = 100.0 - metric
+        train_logits = -1.0 * metric
         return valuation_logits, train_logits
 
 
