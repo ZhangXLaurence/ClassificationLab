@@ -173,9 +173,9 @@ class MetricLogits(nn.Module):
         # std_metric = (metric - avg_distance) / stdv_distance
 
 
-        valuation_logits = metric
+        valuation_logits = -0.5 * metric
         # train_logits = 100 * std_metric
-        train_logits = metric
+        train_logits = -0.5 * metric
         return valuation_logits, train_logits
 
 
