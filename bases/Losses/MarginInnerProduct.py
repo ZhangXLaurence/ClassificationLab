@@ -125,26 +125,26 @@ class MetricLogits(nn.Module):
 
 
 
-        diff = torch.unsqueeze(feat, dim=1) - torch.unsqueeze(weights, dim=0)
+        diff = torch.unsqueeze(feat, dim=1) - torch.unsqueeze(self.weights, dim=0)
         diff = torch.mul(diff, diff)
         metric = torch.sum(diff, dim=-1)
 
 
 
 
-        ip = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
-        # f2 = torch.norm(feat, p=2, dim=1, keepdim=True)
-        # w2 = torch.norm(self.weights, p=2, dim=1, keepdim=True)
-        f2 = torch.pow(feat, 2)
-        f2 = torch.sum(f2, 1, keepdim=True)
-        w2 = torch.pow(self.weights, 2)
-        w2 = torch.sum(w2, 1, keepdim=True)
-        f2w = torch.matmul(f2, (torch.ones(1, ip.size(1), requires_grad=True)).cuda())
-        w2f = torch.matmul(w2, (torch.ones(1, ip.size(0), requires_grad=True)).cuda())
-        # part1 = torch.add(f2w, 1, torch.transpose(w2f,0,1))
-        part1 = torch.add(f2.expand_as(ip), 1, torch.transpose(w2f,0,1).expand_as(ip))
-        metric2_logit = torch.add(part1, -2, ip)
-        metric = metric2_logit
+        # ip = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
+        # # f2 = torch.norm(feat, p=2, dim=1, keepdim=True)
+        # # w2 = torch.norm(self.weights, p=2, dim=1, keepdim=True)
+        # f2 = torch.pow(feat, 2)
+        # f2 = torch.sum(f2, 1, keepdim=True)
+        # w2 = torch.pow(self.weights, 2)
+        # w2 = torch.sum(w2, 1, keepdim=True)
+        # f2w = torch.matmul(f2, (torch.ones(1, ip.size(1), requires_grad=True)).cuda())
+        # w2f = torch.matmul(w2, (torch.ones(1, ip.size(0), requires_grad=True)).cuda())
+        # # part1 = torch.add(f2w, 1, torch.transpose(w2f,0,1))
+        # part1 = torch.add(f2.expand_as(ip), 1, torch.transpose(w2f,0,1).expand_as(ip))
+        # metric2_logit = torch.add(part1, -2, ip)
+        # metric = metric2_logit
         
 
 
