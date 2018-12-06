@@ -121,15 +121,25 @@ class MetricLogits(nn.Module):
         # Normalized inner product, or cosine
         # cos = torch.matmul(normalized_features, torch.transpose(normalized_weights, 0, 1))
         
+
+
+
+
+
         ip = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
-        f2 = torch.norm(feat, p=2, dim=1, keepdim=True)
-        w2 = torch.norm(self.weights, p=2, dim=1, keepdim=True)
-        f2w = torch.matmul(f2, (torch.ones(1, self.class_num)).cuda())
+        # f2 = torch.norm(feat, p=2, dim=1, keepdim=True)
+        # w2 = torch.norm(self.weights, p=2, dim=1, keepdim=True)
+        f2 = torch.pow(feat, 2)
+        f2 = torch.sum(f2, 1, keepdim=True)
+        w2 = torch.pow(self.weights, 2)
+        w2 = torcc.sum(w2, 1, keepdim=True)
+        f2w = torch.matmul(f2, (torch.ones(1, ip.size(1))).cuda())
         w2f = torch.matmul(w2, (torch.ones(1, ip.size(0))).cuda())
         metric2_logit = f2w + torch.transpose(w2f,0,1) - 2 * ip
-        # metric = torch.sqrt(metric2_logit)
         metric = metric2_logit
         
+
+
         # for i in range(ip.size(0)):
         ############################## Norm ##############################
         # avg_w_norm = (sum(norm_weights)/len(norm_weights)).item()
