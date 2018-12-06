@@ -125,7 +125,7 @@ class MetricLogits(nn.Module):
 
 
 
-        diff = torch.unsqueeze(feat, dim=1) - torch.unsqueeze(self.weights, dim=0)
+        diff = torch.unsqueeze(self.weights, dim=1) - torch.unsqueeze(feat, dim=0)
         diff = torch.mul(diff, diff)
         metric = torch.sum(diff, dim=-1)
 
@@ -173,9 +173,9 @@ class MetricLogits(nn.Module):
         # std_metric = (metric - avg_distance) / stdv_distance
 
 
-        valuation_logits = -0.5 * metric
+        valuation_logits = -1.0 * metric
         # train_logits = 100 * std_metric
-        train_logits = -0.5 * metric
+        train_logits = -1.0 * metric
         return valuation_logits, train_logits
 
 
