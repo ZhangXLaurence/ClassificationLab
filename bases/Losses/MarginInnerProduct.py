@@ -125,7 +125,7 @@ class MetricLogits(nn.Module):
 
 
 
-        diff = torch.unsqueeze(self.weights, dim=1) - torch.unsqueeze(feat, dim=0)
+        diff = torch.unsqueeze(self.weights, dim=0) - torch.unsqueeze(feat, dim=1)
         diff = torch.mul(diff, diff)
         metric = torch.sum(diff, dim=-1)
 
