@@ -161,7 +161,8 @@ def main():
         Model = Model.cuda()
     criterion = [SoftmaxLoss]
     # Optimzer
-    Optimizer = torch.optim.SGD(Model.parameters(), lr=arg_BaseLr, momentum=arg_Momentum, weight_decay=arg_WeightDecay)
+    # Optimizer = torch.optim.SGD(Model.parameters(), lr=arg_BaseLr, momentum=arg_Momentum, weight_decay=arg_WeightDecay)
+    Optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad,Model.parameters()), lr=arg_BaseLr, momentum=arg_Momentum, weight_decay=arg_WeightDecay)
     
     # Learning rate Schedule
     LrScheduler = torch.optim.lr_scheduler.StepLR(Optimizer, arg_LrEpochStep, gamma=arg_Gamma)
