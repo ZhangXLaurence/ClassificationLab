@@ -179,13 +179,13 @@ class MetricLogits(nn.Module):
         max_stdmetric = torch.max(std_metric).item()
         min_stdmetric = torch.min(std_metric).item()
         # print('Now average pos. dist. and all avg. are {:.4f} and {:.4f}'.format(avg_distance, metric_mean))
-        print('Now max stdm. and min stdm. are {:.4f} and {:.4f}'.format(max_stdmetric, min_stdmetric))
+        # print('Now max stdm. and min stdm. are {:.4f} and {:.4f}'.format(max_stdmetric, min_stdmetric))
 
 
 
         valuation_logits = -1.0 * metric
         # train_logits = 100 * std_metric
-        train_logits = -0.5 * 30.0 * std_metric
+        train_logits = -0.5 * 10.0 * std_metric
         return valuation_logits, train_logits
 
 
