@@ -178,9 +178,9 @@ class MetricLogits(nn.Module):
         # print('Now average stdv.  and all stdv. are {:.4f} and {:.4f}'.format(stdv_distance, metric_stdv))
 
 
-        valuation_logits = -1.0 * metric
+        valuation_logits = -0.5 * metric
         # train_logits = 100 * std_metric
-        train_logits = -1.0 * metric
+        train_logits = -0.5 * metric
         return valuation_logits, train_logits
 
 
