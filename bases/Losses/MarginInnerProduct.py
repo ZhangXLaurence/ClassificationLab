@@ -108,9 +108,10 @@ class MetricLogits(nn.Module):
         super(MetricLogits, self).__init__()
         self.feature_dim = feature_dim
         self.class_num = class_num
-        # self.weights = nn.Parameter(torch.FloatTensor(class_num, feature_dim))
+        self.weights = nn.Parameter(torch.FloatTensor(class_num, feature_dim))
         # nn.init.xavier_uniform_(self.weights)
-        self.weights = nn.Parameter(torch.zeros(class_num, feature_dim))
+        nn.init.kaiming_uniform_(self.weights)
+        # self.weights = nn.Parameter(torch.rand(class_num, feature_dim))
 
     def forward(self, feat, label):
         # Unit vector for features
