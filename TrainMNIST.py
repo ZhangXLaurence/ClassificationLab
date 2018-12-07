@@ -133,7 +133,7 @@ def main():
     # Learning rate arg
     arg_BaseLr = 0.001
     arg_Momentum = 0.9
-    arg_WeightDecay = 0.0005
+    arg_WeightDecay = 0.0000
 
     # Learning rate scheduler
     arg_LrEpochStep = 20
