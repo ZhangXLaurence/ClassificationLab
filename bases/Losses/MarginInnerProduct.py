@@ -110,7 +110,7 @@ class MetricLogits(nn.Module):
         self.class_num = class_num
         self.weights = nn.Parameter( torch.FloatTensor(class_num, feature_dim))
         # nn.init.xavier_uniform_(self.weights)
-        nn.init.uniform(self.weights, a=20.0, b=40.0)
+        nn.init.uniform_(self.weights, a=-20.0, b=20.0)
         # self.weights.requires_grad = False
         # self.weights = nn.Parameter(torch.rand(class_num, feature_dim))
 
