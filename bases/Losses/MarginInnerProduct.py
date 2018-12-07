@@ -137,18 +137,19 @@ class MetricLogits(nn.Module):
 
 
         norm_features = torch.norm(feat, p=2, dim=-1, keepdim=True)
-        # normalized_features = torch.div(feat, norm_features)
-        # Unit vector for weights
         norm_weights = torch.norm(self.weights, p=2, dim=-1, keepdim=True)
+        diff_norm = torch.unsqueeze(norm_weights, dim=0) - torch.unsqueeze(norm_features, dim=1)
+        diff_norm = torch.mul(diff_norm, diff_norm)
+        norm_diff_sq_tables = torch.sum(diff_norm, dim=-1)
 
 
 
-        # y_onehot = torch.FloatTensor(batch_size, self.class_num)
-        # y_onehot.zero_()
-        # y_onehot = Variable(y_onehot).cuda()
-        # y_onehot.scatter_(1, torch.unsqueeze(label, dim=-1), norm_diff_sq)
-        # y_onehot = y_onehot + 1.0
-        # margin_dist = torch.mul(dist, y_onehot)
+        y_onehot = torch.FloatTensor(metric.size(0), self.class_num)
+        y_onehot.zero_()
+        y_onehot = Variable(y_onehot).cuda()
+        y_onehot.scatter_(1, torch.unsqueeze(label, dim=-1), 0.0001 * norm_diff_sq_tables)
+        y_onehot = y_onehot + 1.0
+        sq_p_dist = torch.mul(metric, y_onehot)
         # margin_logits = -0.5 * margin_dist
 
 
@@ -203,14 +204,15 @@ class MetricLogits(nn.Module):
         # print('Now average pos. dist. and all avg. are {:.4f} and {:.4f}'.format(avg_distance, metric_mean))
         # print('Now max stdm. and min stdm. are {:.4f} and {:.4f}'.format(max_stdmetric, min_stdmetric))
         
-        norm_diff_sq_tables = torch.zeros_like(std_metric)
-        for i in range(norm_diff_sq_tables.size(0)):
-            label_i = int(label[i])
-            norm_diff_sq_tables[i, label_i] += torch.pow(norm_features[i,0] - norm_weights[label_i,0], 2)
+        # norm_diff_sq_tables = torch.zeros_like(std_metric)
+        # for i in range(norm_diff_sq_tables.size(0)):
+        #     label_i = int(label[i])
+        #     norm_diff_sq_tables[i, label_i] += torch.pow(norm_features[i,0] - norm_weights[label_i,0], 2)
 
 
         valuation_logits = -1.0 * metric
-        train_logits = -1.0 * (std_metric + 0.00001 * norm_diff_sq_tables)
+        # train_logits = -1.0 * (std_metric + 0.00001 * norm_diff_sq_tables)
+        train_logits = -1.0 * sq_p_dist
         # train_logits = 1000.0 * (1.0 - 1.0 * std_metric)
         return valuation_logits, train_logits
 
