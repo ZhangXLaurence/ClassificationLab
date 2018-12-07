@@ -157,16 +157,16 @@ class MetricLogits(nn.Module):
         # print('Avg weight norm is {:.6f}, avg feature norm i {:.6f}'.format(avg_w_norm, avg_x_norm))
         ############################## Norm ##############################
         ############################## Theta ##############################
-        # distances = []
-        # for i in range(metric.size(0)):
-        #     label_i = int(label[i])
-        #     # print(cos[i, label_i])
-        #     distance = metric[i, label_i].item()
-        #     distances.append(distance)
-        # max_distance = max(distances)
-        # min_distance = min(distances) 
-        # avg_distance = get_average(distances)
-        # stdv_distance = get_stddev(distances)
+        distances = []
+        for i in range(metric.size(0)):
+            label_i = int(label[i])
+            # print(cos[i, label_i])
+            distance = metric[i, label_i].item()
+            distances.append(distance)
+        max_distance = max(distances)
+        min_distance = min(distances) 
+        avg_distance = get_average(distances)
+        stdv_distance = get_stddev(distances)
         
         # print('Now stdv of distances is {:.4f}'.format(stdv_distance))
         # print('Now average distance is {:.2f}, max distance is {:.2f}, min distance is {:.2f}'.format(avg_distance, max_distance, min_distance))
