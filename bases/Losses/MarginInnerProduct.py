@@ -182,9 +182,9 @@ class MetricLogits(nn.Module):
         print('Now max stdm. and min stdm. are {:.4f} and {:.4f}'.format(max_stdmetric, min_stdmetric))
 
 
-        valuation_logits = -0.5 * metric
+        valuation_logits = -1.0 * metric
         # train_logits = 100 * std_metric
-        train_logits = -0.5 * std_metric
+        train_logits = -0.5 * 30.0 * std_metric
         return valuation_logits, train_logits
 
 
