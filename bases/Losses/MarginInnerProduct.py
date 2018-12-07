@@ -206,7 +206,7 @@ class MetricLogits(nn.Module):
         norm_diff_sq_tables = torch.zeros_like(std_metric)
         for i in range(norm_diff_sq_tables.size(0)):
             label_i = int(label[i])
-            norm_diff_sq_tables[i, label_i] += torch.pow(norm_features[i]-norm_weights[label_i],2)
+            norm_diff_sq_tables[i, label_i] += torch.pow(norm_features[i,0] - norm_weights[label_i,0], 2)
 
 
         valuation_logits = -1.0 * metric
