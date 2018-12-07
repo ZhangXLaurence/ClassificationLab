@@ -210,7 +210,7 @@ class MetricLogits(nn.Module):
 
 
         valuation_logits = -1.0 * metric
-        train_logits = -1.0 * (std_metric + 0.01 * norm_diff_sq_tables)
+        train_logits = -1.0 * (std_metric + 0.00001 * norm_diff_sq_tables)
         # train_logits = 1000.0 * (1.0 - 1.0 * std_metric)
         return valuation_logits, train_logits
 
