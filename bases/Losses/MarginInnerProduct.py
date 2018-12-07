@@ -144,6 +144,7 @@ class MetricLogits(nn.Module):
 
 
 
+
         y_onehot = torch.FloatTensor(metric.size(0), self.class_num)
         y_onehot.zero_()
         y_onehot = Variable(y_onehot).cuda()
@@ -151,8 +152,6 @@ class MetricLogits(nn.Module):
         y_onehot = y_onehot + 1.0
         sq_p_dist = torch.mul(metric, y_onehot)
         # margin_logits = -0.5 * margin_dist
-
-
 
 
         # ip = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
