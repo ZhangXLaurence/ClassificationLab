@@ -108,10 +108,10 @@ class MetricLogits(nn.Module):
         super(MetricLogits, self).__init__()
         self.feature_dim = feature_dim
         self.class_num = class_num
-        self.weights = nn.Parameter(100.0 * torch.FloatTensor(class_num, feature_dim))
+        self.weights = nn.Parameter( torch.FloatTensor(class_num, feature_dim))
         # nn.init.xavier_uniform_(self.weights)
         nn.init.xavier_uniform_(self.weights)
-        self.weights.requires_grad = False
+        # self.weights.requires_grad = False
         # self.weights = nn.Parameter(torch.rand(class_num, feature_dim))
 
     def forward(self, feat, label):
@@ -175,7 +175,7 @@ class MetricLogits(nn.Module):
         # Calculate logits
         metric_mean = torch.mean(metric).item()
         metric_stdv = math.sqrt(torch.var(metric).item())
-        std_metric = (metric - metric_mean) / metric_stdv
+        std_metric = metric / torch.var(metric) #metric_stdv
 
         max_stdmetric = torch.max(std_metric).item()
         min_stdmetric = torch.min(std_metric).item()
