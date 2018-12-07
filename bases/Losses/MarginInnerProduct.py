@@ -108,7 +108,7 @@ class MetricLogits(nn.Module):
         super(MetricLogits, self).__init__()
         self.feature_dim = feature_dim
         self.class_num = class_num
-        self.weights = nn.Parameter(torch.FloatTensor(class_num, feature_dim))
+        self.weights = nn.Parameter(torch.FloatTensor(class_num, feature_dim, requires_grad=False))
         # nn.init.xavier_uniform_(self.weights)
         nn.init.xavier_uniform_(self.weights)
         # self.weights = nn.Parameter(torch.rand(class_num, feature_dim))
@@ -179,14 +179,14 @@ class MetricLogits(nn.Module):
         max_stdmetric = torch.max(std_metric).item()
         min_stdmetric = torch.min(std_metric).item()
 
-        std_metric = (std_metric - min_stdmetric) / (max_stdmetric - min_stdmetric+0.00000001)
+        # std_metric = (std_metric - min_stdmetric) / (max_stdmetric - min_stdmetric + 0.00000001)
         # print('Now average pos. dist. and all avg. are {:.4f} and {:.4f}'.format(avg_distance, metric_mean))
         # print('Now max stdm. and min stdm. are {:.4f} and {:.4f}'.format(max_stdmetric, min_stdmetric))
 
 
         valuation_logits = -1.0 * metric
-        # train_logits = 100 * std_metric
-        train_logits = 1000.0 * (1.0 - 1.0 * std_metric)
+        train_logits = -1.0 * metric
+        # train_logits = 1000.0 * (1.0 - 1.0 * std_metric)
         return valuation_logits, train_logits
 
 
