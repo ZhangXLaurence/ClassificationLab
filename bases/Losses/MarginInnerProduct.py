@@ -135,6 +135,24 @@ class MetricLogits(nn.Module):
 
 
 
+        norm_features = torch.norm(feat, p=2, dim=-1, keepdim=True)
+        # normalized_features = torch.div(feat, norm_features)
+        # Unit vector for weights
+        norm_weights = torch.norm(self.weights, p=2, dim=-1, keepdim=True)
+
+
+
+        # y_onehot = torch.FloatTensor(batch_size, self.class_num)
+        # y_onehot.zero_()
+        # y_onehot = Variable(y_onehot).cuda()
+        # y_onehot.scatter_(1, torch.unsqueeze(label, dim=-1), norm_diff_sq)
+        # y_onehot = y_onehot + 1.0
+        # margin_dist = torch.mul(dist, y_onehot)
+        # margin_logits = -0.5 * margin_dist
+
+
+
+
         # ip = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
         # # f2 = torch.norm(feat, p=2, dim=1, keepdim=True)
         # # w2 = torch.norm(self.weights, p=2, dim=1, keepdim=True)
@@ -183,10 +201,15 @@ class MetricLogits(nn.Module):
         # std_metric = (std_metric - min_stdmetric) / (max_stdmetric - min_stdmetric + 0.00000001)
         # print('Now average pos. dist. and all avg. are {:.4f} and {:.4f}'.format(avg_distance, metric_mean))
         # print('Now max stdm. and min stdm. are {:.4f} and {:.4f}'.format(max_stdmetric, min_stdmetric))
+        
+        norm_diff_sq_tables = torch.zeros_like(std_metric)
+        for i in range(norm_diff_sq_tables.size(0)):
+            label_i = int(label[i])
+            norm_diff_sq_tables[i, label_i] += torch.pow(norm_features[i]-norm_weights[label_i],2)
 
 
         valuation_logits = -1.0 * metric
-        train_logits = -1.0 * std_metric
+        train_logits = -1.0 * (std_metric + norm_diff_sq_tables)
         # train_logits = 1000.0 * (1.0 - 1.0 * std_metric)
         return valuation_logits, train_logits
 
