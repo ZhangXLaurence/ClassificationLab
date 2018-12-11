@@ -213,7 +213,8 @@ class MetricLogits(nn.Module):
         train_logits = -1.0 * std_metric
         # train_logits = -1.0 * sq_p_dist
         # train_logits = 1000.0 * (1.0 - 1.0 * std_metric)
-        return valuation_logits, train_logits
+        weights = self.weights
+        return valuation_logits, train_logits, weights
 
 
 

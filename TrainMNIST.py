@@ -17,7 +17,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-def visualize(feat, labels, epoch):
+def visualize(feat, weights, labels, epoch):
     plt.ion()
     c = ['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff',
          '#ff00ff', '#990000', '#999900', '#009900', '#009999']
@@ -26,6 +26,7 @@ def visualize(feat, labels, epoch):
         plt.plot(feat[labels == i, 0], feat[labels == i, 1], '.', c=c[i], markersize=0.1)
     plt.legend(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], loc='upper right')
     # plt.text(-4.8, 4.6, "epoch=%d" % epoch)
+    plt.plot(weights[:,0], weights[:,1], '.', c='black', markersize=1)
     plt.savefig('./images/softmax_loss_epoch=%d.eps' % epoch,format='eps')
     plt.close()
 
@@ -57,9 +58,9 @@ class TrainingModel(nn.Module):
         self.inner_product = inner_product
     def forward(self, x, label):
         features = self.inference_model(x)
-        evaluation_logits, train_logits = self.inner_product(features, label)
+        evaluation_logits, train_logits, weights = self.inner_product(features, label)
         # logits = self.inner_product(features)
-        return features, evaluation_logits, train_logits
+        return features, evaluation_logits, train_logits, weights
     def SaveInferenceModel():
         # TO BE DOWN
         return 0
@@ -73,7 +74,7 @@ def Test(test_loder, model):
             data = data.cuda()
             target = target.cuda()
 
-        feats, valuation_logits, train_logits = model(data, target)
+        feats, valuation_logits, train_logits, weights = model(data, target)
         _, predicted = torch.max(valuation_logits.data, 1)
         total += target.size(0)
         correct += (predicted == target.data).sum()
@@ -91,7 +92,7 @@ def Train(train_loader, model, criterion, optimizer, epoch, info_interval):
             data = data.cuda()
             target = target.cuda()
 
-        feats, valuation_logits, train_logits = model(data, target)
+        feats, valuation_logits, train_logits, weights = model(data, target)
         loss = criterion[0](train_logits, target)
 
         _, predicted = torch.max(valuation_logits.data, 1)
@@ -109,8 +110,8 @@ def Train(train_loader, model, criterion, optimizer, epoch, info_interval):
         
     feat = torch.cat(ip1_loader, 0)
     labels = torch.cat(idx_loader, 0)
-    # visualize(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
-    visualize3D(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
+    visualize(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
+    # visualize3D(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
     
 
 def Processing(NumEpoch, LrScheduler, Optimizer, train_loader, test_loder, model, criterion, info_interval, save_path):
