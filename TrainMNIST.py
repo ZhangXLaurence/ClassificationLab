@@ -79,6 +79,7 @@ def Test(test_loder, model):
     return acc
 
 
+
 def Train(train_loader, model, criterion, optimizer, epoch, info_interval):
     ip1_loader = []
     idx_loader = []
