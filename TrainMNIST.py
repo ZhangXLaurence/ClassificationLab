@@ -24,10 +24,24 @@ def visualize(feat, labels, epoch):
     for i in range(10):
         plt.plot(feat[labels == i, 0], feat[labels == i, 1], '.', c=c[i], markersize=0.1)
     plt.legend(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], loc='upper right')
-    plt.text(-4.8, 4.6, "epoch=%d" % epoch)
+    # plt.text(-4.8, 4.6, "epoch=%d" % epoch)
     plt.savefig('./images/softmax_loss_epoch=%d.eps' % epoch,format='eps')
     plt.close()
 
+def visualize3D(feat, labels, epoch):
+    # data = np.random.randint(0, 255, size=[40, 40, 40])
+    # x, y, z = data[0], data[1], data[2]
+    ax = plt.subplot(111, projection='3d')
+    for i in range(10):
+        ax.scatter(feat[labels == i, 0], feat[labels == i, 1], feat[labels == i, 2], c=c[i], s=0.1)
+    # ax.scatter(x[:10], y[:10], z[:10], c='y', s=0.1)
+    # ax.scatter(x[10:20], y[10:20], z[10:20], c='r', s=0.1)
+    # ax.scatter(x[30:40], y[30:40], z[30:40], c='g', s=0.1)
+    ax.set_zlabel('Z')
+    ax.set_ylabel('Y')
+    ax.set_xlabel('X')
+    plt.savefig('./images/softmax_loss_3D_epoch=%d.eps' % epoch,format='eps')
+    plt.close()
 
 
 
@@ -91,7 +105,8 @@ def Train(train_loader, model, criterion, optimizer, epoch, info_interval):
         
     feat = torch.cat(ip1_loader, 0)
     labels = torch.cat(idx_loader, 0)
-    visualize(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
+    # visualize(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
+    visualize3D(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
     
 
 def Processing(NumEpoch, LrScheduler, Optimizer, train_loader, test_loder, model, criterion, info_interval, save_path):
