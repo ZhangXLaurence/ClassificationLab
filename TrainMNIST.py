@@ -33,6 +33,8 @@ def visualize3D(feat, labels, epoch):
     # data = np.random.randint(0, 255, size=[40, 40, 40])
     # x, y, z = data[0], data[1], data[2]
     ax = plt.subplot(111, projection='3d')
+    c = ['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff',
+         '#ff00ff', '#990000', '#999900', '#009900', '#009999']
     for i in range(10):
         ax.scatter(feat[labels == i, 0], feat[labels == i, 1], feat[labels == i, 2], c=c[i], s=0.1)
     # ax.scatter(x[:10], y[:10], z[:10], c='y', s=0.1)
