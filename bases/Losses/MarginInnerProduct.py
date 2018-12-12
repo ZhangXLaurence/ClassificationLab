@@ -194,6 +194,7 @@ class MetricLogits(nn.Module):
         # Calculate logits
         metric_mean = torch.mean(metric).item()
         metric_stdv = math.sqrt(torch.var(metric).item())
+        print('stdv of metric is {:.4f}'.format(metric_stdv))
         std_metric = metric - torch.mean(metric) #/ torch.var(metric) #metric_stdv
 
         max_stdmetric = torch.max(std_metric).item()
