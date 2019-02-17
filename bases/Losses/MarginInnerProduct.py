@@ -271,7 +271,7 @@ class KernalMetricLogits(nn.Module):
             Bs.append(B)
 
         print(avg_distance)
-        if avg_distance > 0.5:
+        if avg_distance < 0.5:
             avg_distance = 0.5
         self.scale = (1.0/avg_distance) * math.log(self.class_num-1.0) #(get_average(Bs))
         
