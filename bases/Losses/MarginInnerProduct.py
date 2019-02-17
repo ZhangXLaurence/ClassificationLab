@@ -240,21 +240,16 @@ class KernalMetricLogits(nn.Module):
         self.weights = nn.Parameter( torch.FloatTensor(class_num, feature_dim))
         nn.init.xavier_uniform_(self.weights)
         
-
-
     def forward(self, feat, label):
         # Calculating metric
         diff = torch.unsqueeze(self.weights, dim=0) - torch.unsqueeze(feat, dim=1)
         diff = torch.mul(diff, diff)
         metric = torch.sum(diff, dim=-1)
-
         # 
         valuation_logits = -1.0 * metric
         train_logits = -1.0 * metric
         weights = self.weights
-
-
-        return 8.0 * torch.exp(valuation_logits), 8.0 * torch.exp(train_logits), weights
+        return 4.0 * torch.exp(valuation_logits), 4.0 * torch.exp(train_logits), weights
 
 
 
