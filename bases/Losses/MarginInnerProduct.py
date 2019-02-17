@@ -262,7 +262,7 @@ class KernalMetricLogits(nn.Module):
         probs = F.softmax(self.scale * kernal_metric).detach().cpu().numpy()
         gt_probs = []
         Bs = []
-        for i in range(cos.size(0)):
+        for i in range(kernal_metric.size(0)):
             # Prob
             gt_prob = probs[i, label_i]
             gt_probs.append(gt_prob)
