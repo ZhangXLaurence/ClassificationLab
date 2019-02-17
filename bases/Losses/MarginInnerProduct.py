@@ -249,7 +249,7 @@ class KernalMetricLogits(nn.Module):
         valuation_logits = -1.0 * metric
         train_logits = -1.0 * metric
         weights = self.weights
-        return 2.0 * torch.exp(valuation_logits), 2.0 * torch.exp(train_logits), weights
+        return 1.0 * torch.exp(valuation_logits), 1.0 * torch.exp(train_logits), weights
 
 
 
