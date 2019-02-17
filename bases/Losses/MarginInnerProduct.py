@@ -238,6 +238,7 @@ class KernalMetricLogits(nn.Module):
         self.feature_dim = feature_dim
         self.class_num = class_num
         self.weights = nn.Parameter( torch.FloatTensor(class_num, feature_dim))
+        self.scale = math.sqrt(2.0) * math.log(self.class_num - 1)
         nn.init.xavier_uniform_(self.weights)
         
     def forward(self, feat, label):
@@ -245,11 +246,27 @@ class KernalMetricLogits(nn.Module):
         diff = torch.unsqueeze(self.weights, dim=0) - torch.unsqueeze(feat, dim=1)
         diff = torch.mul(diff, diff)
         metric = torch.sum(diff, dim=-1)
-        # 
-        valuation_logits = -1.0 * metric
-        train_logits = -1.0 * metric
+        kernal_metric = torch.exp(-1.0 * metric)
+
+        # scale = 6.0
+
+        # Corresponding kernal metric calculating
+        cor_metrics = []
+        for i in range(kernal_metric.size(0)):
+            label_i = int(label[i])
+            distance = kernal_metric[i, label_i].item()
+            cor_metrics.append(distance)
+        avg_distance = get_average(cor_metrics)
+
+        if avg_distance > 0.5:
+            avg_distance = 0.5
+        self.scale = (1.0/avg_distance) * math.log(self.class_num - 1)
+        
+        # Return data
+        valuation_logits = self.scale * kernal_metric
+        train_logits = self.scale * kernal_metric
         weights = self.weights
-        return 6.0 * torch.exp(valuation_logits), 6.0 * torch.exp(train_logits), weights
+        return valuation_logits, train_logits, weights
 
 
 
