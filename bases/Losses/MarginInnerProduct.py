@@ -259,16 +259,16 @@ class KernalMetricLogits(nn.Module):
         avg_distance = get_average(cor_metrics)
 
 
-        probs = F.softmax(self.scale * kernal_metric).detach().cpu().numpy()
-        gt_probs = []
-        Bs = []
-        for i in range(kernal_metric.size(0)):
-            # Prob
-            gt_prob = probs[i, label_i]
-            gt_probs.append(gt_prob)
-            # B
-            B = math.exp(self.scale * kernal_metric[i, label_i].data[0]) * (1.0/gt_prob - 1.0)
-            Bs.append(B)
+        # probs = F.softmax(self.scale * kernal_metric).detach().cpu().numpy()
+        # gt_probs = []
+        # Bs = []
+        # for i in range(kernal_metric.size(0)):
+        #     # Prob
+        #     gt_prob = probs[i, label_i]
+        #     gt_probs.append(gt_prob)
+        #     # B
+        #     B = math.exp(self.scale * kernal_metric[i, label_i].data[0]) * (1.0/gt_prob - 1.0)
+        #     Bs.append(B)
 
         # print(avg_distance)
         if avg_distance < 0.5:
