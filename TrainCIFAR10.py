@@ -148,7 +148,7 @@ def main():
     arg_TrainBatchSize = 32*8
     arg_TestBatchSize = 128
 
-    arg_FeatureDim = 32
+    arg_FeatureDim = 512
     # arg_FeatureDim = 10
     arg_classNum = 10
 
@@ -157,7 +157,7 @@ def main():
     # Learning rate arg
     arg_BaseLr = 0.1
     arg_Momentum = 0.9
-    arg_WeightDecay = 0.0000
+    arg_WeightDecay = 0.00005
 
     # Learning rate scheduler
     arg_LrEpochStep = 100
@@ -170,8 +170,8 @@ def main():
 
     # Model Constructing
     # Inference Model Constructing
-    Inference = SimpleNet.SmallNet(feature_dim=arg_FeatureDim)
-    # Inference = resnet18(pretrained=False, num_classes=arg_classNum)
+    # Inference = SimpleNet.SmallNet(feature_dim=arg_FeatureDim)
+    Inference = resnet18(pretrained=False, num_classes=arg_classNum)
     # Innerproduct Construction
     # InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.InnerProductWithScaleButNoUse(arg_FeatureDim, arg_classNum)
