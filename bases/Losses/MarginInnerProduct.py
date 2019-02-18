@@ -251,12 +251,12 @@ class KernalMetricLogits(nn.Module):
         # scale = 6.0
 
         # Corresponding kernal metric calculating
-        cor_metrics = []
-        for i in range(kernal_metric.size(0)):
-            label_i = int(label[i])
-            distance = kernal_metric[i, label_i].item()
-            cor_metrics.append(distance)
-        avg_distance = get_average(cor_metrics)
+        # cor_metrics = []
+        # for i in range(kernal_metric.size(0)):
+        #     label_i = int(label[i])
+        #     distance = kernal_metric[i, label_i].item()
+        #     cor_metrics.append(distance)
+        # avg_distance = get_average(cor_metrics)
 
 # ##########
         # probs = F.softmax(self.scale * kernal_metric).detach().cpu().numpy()
@@ -271,10 +271,10 @@ class KernalMetricLogits(nn.Module):
         #     Bs.append(B)
 # ##########
 
-        if avg_distance < 0.5:
-            avg_distance = 0.5
-        self.scale = (1.0/avg_distance) * math.log(self.class_num-1.0) #(get_average(Bs))
-        # self.scale = 8.0
+        # if avg_distance < 0.5:
+        #     avg_distance = 0.5
+        # self.scale = (1.0/avg_distance) * math.log(self.class_num-1.0) #(get_average(Bs))
+        self.scale = 8.0
         
         # Return data
         valuation_logits = self.scale * kernal_metric
