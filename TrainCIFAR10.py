@@ -145,7 +145,7 @@ def main():
 
     # Data arg
     arg_TrainDataPath = './data'
-    arg_TrainBatchSize = 64*8
+    arg_TrainBatchSize = 32*8
     arg_TestBatchSize = 128
 
     arg_FeatureDim = 128
