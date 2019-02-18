@@ -170,8 +170,8 @@ def main():
 
     # Model Constructing
     # Inference Model Constructing
-    # Inference = SimpleNet.SmallNet(feature_dim=arg_FeatureDim)
-    Inference = resnet18(pretrained=False, num_classes=arg_classNum)
+    Inference = SimpleNet.SmallNet(feature_dim=arg_FeatureDim)
+    # Inference = resnet18(pretrained=False, num_classes=arg_classNum)
     # Innerproduct Construction
     # InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.InnerProductWithScaleButNoUse(arg_FeatureDim, arg_classNum)
