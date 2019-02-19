@@ -116,13 +116,14 @@ def main():
 
     # Dataset Loading
     TrainLoader, TestLoader = DataLoad.LoadCIFAR10(arg_TrainBatchSize, arg_TestBatchSize, arg_TrainDataPath, arg_InputSize)
+    
     # Model Constructing
     # Inference Model Constructing
     Inference = resnet18(pretrained=False, num_classes=arg_classNum)
-    # Inference = SimpleNet.SmallNet(feature_dim=arg_FeatureDim)
+    
     # Innerproduct Construction
     InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
-    # InnerProduct = GradReform.MyLinear(arg_FeatureDim, arg_classNum)
+    InnerProduct = MarginInnerProduct.PureKernalMetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.ArcFaceInnerProduct(arg_FeatureDim, arg_classNum, scale=7.0, margin=0.35)
     Model = torch.nn.DataParallel(TrainingModel(Inference, InnerProduct), arg_DeviceIds)
 
