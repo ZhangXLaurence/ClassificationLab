@@ -145,10 +145,10 @@ def main():
 
     # Data arg
     arg_TrainDataPath = './data'
-    arg_TrainBatchSize = 32*8
+    arg_TrainBatchSize = 128*2
     arg_TestBatchSize = 128
 
-    arg_FeatureDim = 10
+    arg_FeatureDim = 128
     # arg_FeatureDim = 10
     arg_classNum = 10
 
@@ -171,7 +171,7 @@ def main():
     # Model Constructing
     # Inference Model Constructing
     # Inference = SimpleNet.SmallNet(feature_dim=arg_FeatureDim)
-    Inference = resnet18(pretrained=False, num_classes=arg_classNum)
+    Inference = resnet50(pretrained=False, num_classes=arg_classNum)
     # Innerproduct Construction
     # InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.InnerProductWithScaleButNoUse(arg_FeatureDim, arg_classNum)
