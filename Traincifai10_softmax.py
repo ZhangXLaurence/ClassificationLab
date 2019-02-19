@@ -89,10 +89,10 @@ def main():
     # Get Hyper parameters and sets
 
     # General arg
-    arg_DeviceIds = [0]
+    arg_DeviceIds = [0,1,2,3]
     arg_NumEpoch = 50
     arg_InfoInterval = 100
-    arg_SavePath = './DemoMNIST/checkpoints/softmax_CIFAR10_'
+    arg_SavePath = './checkpoints/AdaKM_CIFAR10_'
     arg_SaveEpochInterbal = 10
 
     # Data arg
