@@ -89,8 +89,8 @@ def main():
     # Get Hyper parameters and sets
 
     # General arg
-    arg_DeviceIds = [0,1,2,3]
-    arg_NumEpoch = 50
+    arg_DeviceIds = [0,1,2,3,4,5,6,7]
+    arg_NumEpoch = 300
     arg_InfoInterval = 100
     arg_SavePath = './checkpoints/AdaKM_CIFAR10_'
     arg_SaveEpochInterbal = 10
@@ -111,7 +111,7 @@ def main():
     arg_WeightDecay = 0.0005
 
     # Learning rate scheduler
-    arg_LrEpochStep = 20
+    arg_LrEpochStep = 50
     arg_Gamma = 0.5
 
     # Dataset Loading
