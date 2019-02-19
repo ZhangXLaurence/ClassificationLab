@@ -138,7 +138,7 @@ def main():
     # Get Hyper parameters and sets
 
     # General arg
-    arg_DeviceIds = [0,1,2,3,4,5,6,7]
+    arg_DeviceIds = [0,1]
     arg_NumEpoch = 500
     arg_InfoInterval = 100
     arg_SavePath = './checkpoints/AdaKM_CIFAR10_'
@@ -146,7 +146,7 @@ def main():
 
     # Data arg
     arg_TrainDataPath = './data'
-    arg_TrainBatchSize = 128*2
+    arg_TrainBatchSize = 64*2
     arg_TestBatchSize = 128
 
     arg_FeatureDim = 128
