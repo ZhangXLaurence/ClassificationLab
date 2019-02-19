@@ -123,7 +123,7 @@ def main():
     
     # Innerproduct Construction
     InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
-    InnerProduct = MarginInnerProduct.PureKernalMetricLogits(arg_FeatureDim, arg_classNum)
+    # InnerProduct = MarginInnerProduct.PureKernalMetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.ArcFaceInnerProduct(arg_FeatureDim, arg_classNum, scale=7.0, margin=0.35)
     Model = torch.nn.DataParallel(TrainingModel(Inference, InnerProduct), arg_DeviceIds)
 
