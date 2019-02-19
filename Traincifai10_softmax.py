@@ -22,8 +22,8 @@ class TrainingModel(nn.Module):
         self.inner_product = inner_product
     def forward(self, x, label):
         features = self.inference_model(x)
-        # logits = self.inner_product(features, label)
-        logits = self.inner_product(features)
+        logits = self.inner_product(features, label)
+        # logits = self.inner_product(features)
         return features, logits
     def SaveInferenceModel():
         # TO BE DOWN
