@@ -10,6 +10,7 @@ sys.path.append(os.path.abspath('..'))
 from bases.DataLoader import DataLoad
 from bases.Models import SimpleNet
 from bases.Models import resnet18
+from bases.Models import resnet50
 from bases.Losses import MarginInnerProduct
 from Tools import ModelSaver
 
