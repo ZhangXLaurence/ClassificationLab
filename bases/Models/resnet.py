@@ -148,6 +148,7 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
+        print(x.size(0))
         x = self.ip1(x)
 
         return x
