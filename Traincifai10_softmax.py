@@ -11,7 +11,7 @@ from bases.DataLoader import DataLoad
 from bases.Models import SimpleNet
 from bases.Models import resnet18
 from bases.Losses import MarginInnerProduct
-from bases.Losses import GradReform
+
 from Tools import ModelSaver
 
 
