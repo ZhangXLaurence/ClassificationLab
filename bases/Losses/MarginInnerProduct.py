@@ -245,7 +245,7 @@ class PureKernalMetricLogits(nn.Module):
         diff = torch.unsqueeze(self.weights, dim=0) - torch.unsqueeze(feat, dim=1)
         diff = torch.mul(diff, diff)
         metric = torch.sum(diff, dim=-1)
-        kernal_metric = torch.exp(-1.0 * metric / 1.4)
+        kernal_metric = torch.exp(-1.0 * metric / 1.0)
         # Corresponding kernal metric calculating
         cor_metrics = []
         for i in range(kernal_metric.size(0)):
