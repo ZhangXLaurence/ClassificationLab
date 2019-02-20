@@ -23,8 +23,8 @@ class TrainingModel(nn.Module):
     def forward(self, x, label):
         features = self.inference_model(x)
         # logits = self.inner_product(features, label)
-        logits = self.inner_product(features)
-        return features, logits
+        train_logits, test_logits = self.inner_product(features)
+        return features, train_logits, test_logits
     def SaveInferenceModel():
         # TO BE DOWN
         return 0
@@ -38,8 +38,8 @@ def Test(test_loder, model):
             data = data.cuda()
             target = target.cuda()
 
-        feats, logits = model(data, target)
-        _, predicted = torch.max(logits.data, 1)
+        feats, train_logits, test_logits = model(data, target)
+        _, predicted = torch.max(test_logits.data, 1)
         total += target.size(0)
         correct += (predicted == target.data).sum()
     acc = (100. * float(correct)) / float(total)
@@ -53,10 +53,10 @@ def Train(train_loader, model, criterion, optimizer, epoch, info_interval):
             data = data.cuda()
             target = target.cuda()
 
-        feats, logits = model(data, target)
-        loss = criterion[0](logits, target)
+        feats, train_logits, test_logits = model(data, target)
+        loss = criterion[0](train_logits, target)
 
-        _, predicted = torch.max(logits.data, 1)
+        _, predicted = torch.max(train_logits.data, 1)
         accuracy = (target.data == predicted).float().mean()
 
         optimizer[0].zero_grad()

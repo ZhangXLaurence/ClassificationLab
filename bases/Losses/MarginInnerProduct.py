@@ -257,8 +257,8 @@ class PureKernalMetricLogits(nn.Module):
             avg_distance = 0.5
         self.scale = (1.0/avg_distance) * math.log(self.class_num-1.0) #(get_average(Bs))
         # Return data
-        logits = self.scale * kernal_metric
-        return logits
+        train_logits = self.scale * kernal_metric
+        return train_logits, kernal_metric
 
 
 
