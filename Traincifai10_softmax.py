@@ -22,8 +22,8 @@ class TrainingModel(nn.Module):
         self.inner_product = inner_product
     def forward(self, x, label):
         features = self.inference_model(x)
-        # logits = self.inner_product(features, label)
-        train_logits, test_logits = self.inner_product(features)
+        train_logits, test_logits = self.inner_product(features, label)
+        # train_logits, test_logits = self.inner_product(features)
         return features, train_logits, test_logits
     def SaveInferenceModel():
         # TO BE DOWN
@@ -122,8 +122,8 @@ def main():
     Inference = resnet18(pretrained=False, num_classes=arg_classNum)
     
     # Innerproduct Construction
-    InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
-    # InnerProduct = MarginInnerProduct.PureKernalMetricLogits(arg_FeatureDim, arg_classNum)
+    # InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
+    InnerProduct = MarginInnerProduct.PureKernalMetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.ArcFaceInnerProduct(arg_FeatureDim, arg_classNum, scale=7.0, margin=0.35)
     Model = torch.nn.DataParallel(TrainingModel(Inference, InnerProduct), arg_DeviceIds)
 
