@@ -72,12 +72,12 @@ class TrainingModel(nn.Module):
         self.inner_product = inner_product
     def forward(self, x, label):
         features = self.inference_model(x)
-        # evaluation_logits, train_logits, weights = self.inner_product(features, label)
+        evaluation_logits, train_logits, weights = self.inner_product(features, label)
         #############
-        logits = self.inner_product(features)
-        evaluation_logits = logits
-        train_logits = logits
-        weights = [0,0]
+        # logits = self.inner_product(features)
+        # evaluation_logits = logits
+        # train_logits = logits
+        # weights = [0,0]
         #############
         return features, evaluation_logits, train_logits, weights
     def SaveInferenceModel():
@@ -130,8 +130,8 @@ def Train(train_loader, model, criterion, optimizer, epoch, info_interval):
     feat = torch.cat(ip1_loader, 0)
     labels = torch.cat(idx_loader, 0)
 
-    visualizeWithoutW(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
-    # visualize(feat.data.cpu().numpy(), weights.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
+    # visualizeWithoutW(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
+    visualize(feat.data.cpu().numpy(), weights.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
     # visualize3D(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
     
 
@@ -188,8 +188,8 @@ def main():
     # Inference Model Constructing
     Inference = SimpleNet.SmallNet(feature_dim=arg_FeatureDim)
     # Innerproduct Construction
-    InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
-    # InnerProduct = MarginInnerProduct.KernalMetricLogits(arg_FeatureDim, arg_classNum)
+    # InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
+    InnerProduct = MarginInnerProduct.KernalMetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.ArcFaceInnerProduct(arg_FeatureDim, arg_classNum, scale=7.0, margin=0.35)
     Model = torch.nn.DataParallel(TrainingModel(Inference, InnerProduct), arg_DeviceIds)
 
