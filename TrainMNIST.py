@@ -58,8 +58,12 @@ class TrainingModel(nn.Module):
         self.inner_product = inner_product
     def forward(self, x, label):
         features = self.inference_model(x)
-        evaluation_logits, train_logits, weights = self.inner_product(features, label)
-        # logits = self.inner_product(features)
+        # evaluation_logits, train_logits, weights = self.inner_product(features, label)
+        #############
+        logits = self.inner_product(features)
+        evaluation_logits = logits
+        train_logits = logits
+        #############
         return features, evaluation_logits, train_logits, weights
     def SaveInferenceModel():
         # TO BE DOWN
@@ -168,10 +172,8 @@ def main():
     # Inference Model Constructing
     Inference = SimpleNet.SmallNet(feature_dim=arg_FeatureDim)
     # Innerproduct Construction
-    # InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
-    # InnerProduct = MarginInnerProduct.InnerProductWithScaleButNoUse(arg_FeatureDim, arg_classNum)
-    # InnerProduct = MarginInnerProduct.MetricLogits(arg_FeatureDim, arg_classNum)
-    InnerProduct = MarginInnerProduct.KernalMetricLogits(arg_FeatureDim, arg_classNum)
+    InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
+    # InnerProduct = MarginInnerProduct.KernalMetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.ArcFaceInnerProduct(arg_FeatureDim, arg_classNum, scale=7.0, margin=0.35)
     Model = torch.nn.DataParallel(TrainingModel(Inference, InnerProduct), arg_DeviceIds)
 
