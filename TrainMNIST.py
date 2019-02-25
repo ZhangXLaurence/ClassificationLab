@@ -63,6 +63,7 @@ class TrainingModel(nn.Module):
         logits = self.inner_product(features)
         evaluation_logits = logits
         train_logits = logits
+        weights = [0,0]
         #############
         return features, evaluation_logits, train_logits, weights
     def SaveInferenceModel():
