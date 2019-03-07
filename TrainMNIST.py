@@ -72,14 +72,14 @@ class TrainingModel(nn.Module):
         self.inner_product = inner_product
     def forward(self, x, label):
         features = self.inference_model(x)
-        train_logits, evaluation_logits = self.inner_product(features, label)
+        train_logits, evaluation_logits, weights = self.inner_product(features, label)
         #############
         # logits = self.inner_product(features)
         # evaluation_logits = logits
         # train_logits = logits
         # weights = [0,0]
         #############
-        return features, evaluation_logits, train_logits
+        return features, evaluation_logits, train_logits, weights
     def SaveInferenceModel():
         # TO BE DOWN
         return 0

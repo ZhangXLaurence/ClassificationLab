@@ -797,5 +797,5 @@ class VarKernalMetricLogits(nn.Module):
         # train_logits = 3.0 * self.scale * kernal_metric
         train_logits = 4.0 * kernal_metric
 
-        return train_logits, torch.exp(-1.0 * metric)
+        return train_logits, torch.exp(-1.0 * metric), self.weights
         # return train_logits
