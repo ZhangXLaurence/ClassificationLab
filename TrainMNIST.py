@@ -79,7 +79,7 @@ class TrainingModel(nn.Module):
         # train_logits = logits
         # weights = [0,0]
         #############
-        return features, evaluation_logits, train_logits, weights
+        return features, evaluation_logits, train_logits
     def SaveInferenceModel():
         # TO BE DOWN
         return 0
