@@ -743,3 +743,59 @@ class PcheckNormalizedInnerProductWithReform(nn.Module):
 
 
 
+
+class VarKernalMetricLogits(nn.Module):
+    def __init__(self, feature_dim, class_num):
+        super(VarKernalMetricLogits, self).__init__()
+        self.feature_dim = feature_dim
+        self.class_num = class_num
+        self.weights = nn.Parameter( torch.FloatTensor(class_num, feature_dim))
+        self.scale = 2.0 * math.log(self.class_num - 1)
+        nn.init.xavier_uniform_(self.weights)
+        
+    def forward(self, feat, label):
+        # Calculating metric
+        diff = torch.unsqueeze(self.weights, dim=0) - torch.unsqueeze(feat, dim=1)
+        diff = torch.mul(diff, diff)
+        metric = torch.sum(diff, dim=-1)
+        # Corresponding Euchlidean metric 
+        cor_eu_metrics = []
+        for i in range(metric.size(0)):
+            label_i = int(label[i])
+            distance = torch.sqrt(metric[i, label_i]).item()
+            cor_eu_metrics.append(distance)
+
+        # 计算对应类别的原是距离方差
+        std_e_distance = get_variance(cor_eu_metrics)
+
+        # 计算所有类别的原是距离方差
+        std_all_e_distance = torch.var(torch.sqrt(metric)).item()
+        # 计算非对应类别的原是距离方差
+        std_nocor_e_distance = (self.class_num * std_all_e_distance - std_e_distance) / (self.class_num - 1)
+
+        std_tables = torch.ones_like(metric) * std_nocor_e_distance
+        std_tables = Variable(std_tables).cuda()
+        std_tables.scatter_(1, torch.unsqueeze(label, dim=-1), std_e_distance)
+
+        kernal_metric = torch.exp(-1.0 * metric / std_tables)
+        # Corresponding kernal metric calculating
+        cor_metrics = []
+        for i in range(kernal_metric.size(0)):
+            label_i = int(label[i])
+            distance = kernal_metric[i, label_i].item()
+            cor_metrics.append(distance)
+        avg_distance = get_average(cor_metrics)
+        # var_distance = get_variance(cor_metrics)
+        # print('The average corresponding metric is {:.4f}'.format(avg_distance))
+        # print('The variance cor metric is {:.4f}'.format(std_e_distance))
+        # print('The average corresponding eu metric is {:.4f}'.format(avg_e_distance))
+        # print('The variance non cor metric eu is {:.4f}'.format(std_nocor_e_distance))
+        if avg_distance < 0.5:
+            avg_distance = 0.5
+        self.scale = (1.0/avg_distance) * math.log(self.class_num-1.0) #(get_average(Bs))
+        # Return data
+        # train_logits = 3.0 * self.scale * kernal_metric
+        train_logits = 4.0 * kernal_metric
+
+        return train_logits, torch.exp(-1.0 * metric)
+        # return train_logits
