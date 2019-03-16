@@ -65,7 +65,6 @@ class MyLinear(nn.Module):
         super(MyLinear, self).__init__()
         self.feature_dim = feature_dim
         self.class_num = class_num
-        self.scale = scale
         self.weights = nn.Parameter(torch.FloatTensor(class_num, feature_dim))
         nn.init.xavier_uniform_(self.weights)
     

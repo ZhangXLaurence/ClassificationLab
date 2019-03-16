@@ -188,7 +188,7 @@ def main():
     # Inference Model Constructing
     Inference = SimpleNet.SmallNet(feature_dim=arg_FeatureDim)
     # Innerproduct Construction
-    InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
+    # InnerProduct = torch.nn.Linear(arg_FeatureDim, arg_classNum)
     InnerProduct = MarginInnerProduct.MyLinear(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.KernalMetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.VarKernalMetricLogits(arg_FeatureDim, arg_classNum)
