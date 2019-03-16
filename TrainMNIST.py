@@ -167,7 +167,7 @@ def main():
     arg_TrainBatchSize = 128
     arg_TestBatchSize = 1024
 
-    arg_FeatureDim = 2
+    arg_FeatureDim = 8
     # arg_FeatureDim = 10
     arg_classNum = 10
     
