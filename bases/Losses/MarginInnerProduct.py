@@ -60,46 +60,22 @@ def get_n_moment(num,n):
 
 
 
-class InnerProductWithScaleButNoUse(nn.Module):
-    def __init__(self, feature_dim, class_num, scale=20):
-        super(InnerProductWithScaleButNoUse, self).__init__()
+class MyLinear(nn.Module):
+    def __init__(self, feature_dim, class_num):
+        super(MyLinear, self).__init__()
         self.feature_dim = feature_dim
         self.class_num = class_num
         self.scale = scale
         self.weights = nn.Parameter(torch.FloatTensor(class_num, feature_dim))
         nn.init.xavier_uniform_(self.weights)
-
+    
     def forward(self, feat, label):
-        # Unit vector for features
-        norm_features = torch.norm(feat, p=2, dim=-1, keepdim=True)
-        normalized_features = torch.div(feat, norm_features)
-        # Unit vector for weights
-        norm_weights = torch.norm(self.weights, p=2, dim=-1, keepdim=True)
-        normalized_weights = torch.div(self.weights, norm_weights)
-        # Normalized inner product, or cosine
-        cos = torch.matmul(normalized_features, torch.transpose(normalized_weights, 0, 1))
-        ############################## Norm ##############################
-        avg_w_norm = (sum(norm_weights)/len(norm_weights)).item()
-        avg_x_norm = (sum(norm_features)/len(norm_features)).item()
-        # print('Avg weight norm is {:.6f}, avg feature norm i {:.6f}'.format(avg_w_norm, avg_x_norm))
-        ############################## Norm ##############################
-        ############################## Theta ##############################
-        thetas = []
-        for i in range(cos.size(0)):
-            label_i = int(label[i])
-            # print(cos[i, label_i])
-            theta = math.acos(torch.clamp(cos[i, label_i], -1, 1).item()) #/ math.pi * 180  # degree
-            thetas.append(theta)
-        max_theta = max(thetas)
-        min_theta = min(thetas) 
-        avg_theta = get_average(thetas)
-        # print('Now stdv of thetas is {:.4f}'.format(stdv_theta))
-        # print('Now average theta is {:.2f}, max theta is {:.2f}, min theta is {:.2f}'.format(avg_theta, max_theta, min_theta))
-        ############################## Theta ##############################
         # Calculate logits
         valuation_logits = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
         train_logits = valuation_logits
-        return valuation_logits, train_logits
+        return valuation_logits, train_logits, self.weights
+
+
 
 
 
@@ -116,33 +92,15 @@ class MetricLogits(nn.Module):
 
 
     def forward(self, feat, label):
-        # Unit vector for features
-        # norm_features = torch.norm(feat, p=2, dim=-1, keepdim=True)
-        # normalized_features = torch.div(feat, norm_features)
-        # Unit vector for weights
-        # norm_weights = torch.norm(self.weights, p=2, dim=-1, keepdim=True)
-        # normalized_weights = torch.div(self.weights, norm_weights)
-        # Normalized inner product, or cosine
-        # cos = torch.matmul(normalized_features, torch.transpose(normalized_weights, 0, 1))
-        
-
-
-
-
         diff = torch.unsqueeze(self.weights, dim=0) - torch.unsqueeze(feat, dim=1)
         diff = torch.mul(diff, diff)
         metric = torch.sum(diff, dim=-1)
-
-
-
 
         norm_features = torch.norm(feat, p=2, dim=-1, keepdim=True)
         norm_weights = torch.norm(self.weights, p=2, dim=-1, keepdim=True)
         diff_norm = torch.unsqueeze(norm_weights, dim=0) - torch.unsqueeze(norm_features, dim=1)
         diff_norm = torch.mul(diff_norm, diff_norm)
         norm_diff_sq_tables = torch.sum(diff_norm, dim=-1)
-
-
 
 
         y_onehot = torch.FloatTensor(metric.size(0), self.class_num)
@@ -154,29 +112,6 @@ class MetricLogits(nn.Module):
         # margin_logits = -0.5 * margin_dist
 
 
-        # ip = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
-        # # f2 = torch.norm(feat, p=2, dim=1, keepdim=True)
-        # # w2 = torch.norm(self.weights, p=2, dim=1, keepdim=True)
-        # f2 = torch.pow(feat, 2)
-        # f2 = torch.sum(f2, 1, keepdim=True)
-        # w2 = torch.pow(self.weights, 2)
-        # w2 = torch.sum(w2, 1, keepdim=True)
-        # f2w = torch.matmul(f2, (torch.ones(1, ip.size(1), requires_grad=True)).cuda())
-        # w2f = torch.matmul(w2, (torch.ones(1, ip.size(0), requires_grad=True)).cuda())
-        # # part1 = torch.add(f2w, 1, torch.transpose(w2f,0,1))
-        # part1 = torch.add(f2.expand_as(ip), 1, torch.transpose(w2f,0,1).expand_as(ip))
-        # metric2_logit = torch.add(part1, -2, ip)
-        # metric = metric2_logit
-        
-
-
-        # for i in range(ip.size(0)):
-        ############################## Norm ##############################
-        # avg_w_norm = (sum(norm_weights)/len(norm_weights)).item()
-        # avg_x_norm = (sum(norm_features)/len(norm_features)).item()
-        # print('Avg weight norm is {:.6f}, avg feature norm i {:.6f}'.format(avg_w_norm, avg_x_norm))
-        ############################## Norm ##############################
-        ############################## Theta ##############################
         distances = []
         for i in range(metric.size(0)):
             label_i = int(label[i])
@@ -200,22 +135,12 @@ class MetricLogits(nn.Module):
         max_stdmetric = torch.max(std_metric).item()
         min_stdmetric = torch.min(std_metric).item()
 
-        # std_metric = (std_metric - min_stdmetric) / (max_stdmetric - min_stdmetric + 0.00000001)
-        # print('Now average pos. dist. and all avg. are {:.4f} and {:.4f}'.format(avg_distance, metric_mean))
-        # print('Now max stdm. and min stdm. are {:.4f} and {:.4f}'.format(max_stdmetric, min_stdmetric))
-        
-        # norm_diff_sq_tables = torch.zeros_like(std_metric)
-        # for i in range(norm_diff_sq_tables.size(0)):
-        #     label_i = int(label[i])
-        #     norm_diff_sq_tables[i, label_i] += torch.pow(norm_features[i,0] - norm_weights[label_i,0], 2)
-
-
         valuation_logits = -1.0 * metric
         train_logits = -1.0 * std_metric
         # train_logits = -1.0 * sq_p_dist
         # train_logits = 1000.0 * (1.0 - 1.0 * std_metric)
         weights = self.weights
-        return valuation_logits, train_logits, weights
+        return  train_logits, valuation_logits, weights
 
 
 
@@ -321,7 +246,7 @@ class KernalMetricLogits(nn.Module):
         valuation_logits = self.scale * kernal_metric
         train_logits = self.scale * kernal_metric
         weights = self.weights
-        return valuation_logits, train_logits, weights
+        return train_logits, valuation_logits, weights
 
 
 
@@ -595,207 +520,59 @@ class PcheckArcFaceInnerProduct(nn.Module):
 
 
 
-############################################################################
-class PcheckNormalizedInnerProductWithAutoScaleDynamicMed(nn.Module):
-    def __init__(self, feature_dim, class_num, scale=20):
-        super(PcheckNormalizedInnerProductWithAutoScaleDynamicMed, self).__init__()
-        self.feature_dim = feature_dim
-        self.class_num = class_num
-        self.scale = math.sqrt(2.0) * math.log(self.class_num - 1)
-        self.weights = nn.Parameter(torch.FloatTensor(class_num, feature_dim))
-        nn.init.xavier_uniform_(self.weights)
 
-    def forward(self, feat, label):
-        # Unit vector for features
-        norm_features = torch.norm(feat, p=2, dim=-1, keepdim=True)
-        normalized_features = torch.div(feat, norm_features)
-        # Unit vector for weights
-        norm_weights = torch.norm(self.weights, p=2, dim=-1, keepdim=True)
-        normalized_weights = torch.div(self.weights, norm_weights)
-
-        # print('Avg weight norm is {:.6f}, avg feature norm i {:.6f}'.format((sum(norm_weights)/len(norm_weights)).item(), (sum(norm_features)/len(norm_features)).item() ) )
-        # Normalized inner product, or cosine
-        cos = torch.matmul(normalized_features, torch.transpose(normalized_weights, 0, 1))
-        logits = self.scale * cos
-
-        thetas = []
-        probs = F.softmax(logits).detach().cpu().numpy()
-        gt_probs = []
-        Bs = []
-        for i in range(cos.size(0)):
-            # Theta
-            label_i = int(label[i])
-            theta = math.acos(cos[i, label_i].data[0]) / math.pi * 180  # degree
-            thetas.append(theta)
-            # Prob
-            gt_prob = probs[i, label_i]
-            gt_probs.append(gt_prob)
-            # B
-            B = math.exp(logits[i, label_i].data[0]) * (1.0/gt_prob - 1.0)
-            Bs.append(B)
-        # Thetas
-        max_theta = max(thetas)
-        min_theta = min(thetas) 
-        avg_theta = get_average(thetas)
-        # med_theta = mediannum(theta)
-        # Ps
-        max_p = max(gt_probs)
-        min_p = min(gt_probs)
-        avg_p = get_average(gt_probs)
-        # B_avg_thetas
-        B_avg = math.acos(math.log(get_average(Bs) / (self.class_num - 1)) / self.scale) / math.pi * 180 # Degree
+# class VarKernalMetricLogits(nn.Module):
+#     def __init__(self, feature_dim, class_num):
+#         super(VarKernalMetricLogits, self).__init__()
+#         self.feature_dim = feature_dim
+#         self.class_num = class_num
+#         self.weights = nn.Parameter( torch.FloatTensor(class_num, feature_dim))
+#         self.scale = 2.0 * math.log(self.class_num - 1)
+#         nn.init.xavier_uniform_(self.weights)
         
-        med_theta = mediannum(thetas)
-        med_theta_in_pi = (med_theta / 180.0) * math.pi
-        if med_theta_in_pi > math.pi/4.0:
-            med_theta_in_pi = math.pi/4.0
-        self.scale = (1.0/math.cos(med_theta_in_pi)) * math.log(get_average(Bs))  
-        
-        ###
-        print('The largest P and it\'s theta is {:.6f} and {:.6f}'.format(max_p, min_theta))
-        print('The smallest P and it\s theta is {:.6f} and {:.6f}'.format(min_p, max_theta))
-        print('The average P is {:.6f}'.format(avg_p))
-        print('The medi is {:.6f}'.format(med_theta))
-        print('B_degree is {:.4f}, scale is {:.4f}'.format(B_avg, self.scale))
+#     def forward(self, feat, label):
+#         # Calculating metric
+#         diff = torch.unsqueeze(self.weights, dim=0) - torch.unsqueeze(feat, dim=1)
+#         diff = torch.mul(diff, diff)
+#         metric = torch.sum(diff, dim=-1)
+#         # Corresponding Euchlidean metric 
+#         cor_eu_metrics = []
+#         for i in range(metric.size(0)):
+#             label_i = int(label[i])
+#             distance = torch.sqrt(metric[i, label_i]).item()
+#             cor_eu_metrics.append(distance)
 
-        return cos, logits, avg_theta, med_theta, B_avg, self.scale, 0, 0
+#         # 计算对应类别的原是距离方差
+#         std_e_distance = get_variance(cor_eu_metrics)
 
+#         # 计算所有类别的原是距离方差
+#         std_all_e_distance = torch.var(torch.sqrt(metric)).item()
+#         # 计算非对应类别的原是距离方差
+#         std_nocor_e_distance = (self.class_num * std_all_e_distance - std_e_distance) / (self.class_num - 1)
 
+#         std_tables = torch.ones_like(metric) * std_nocor_e_distance
+#         std_tables = Variable(std_tables).cuda()
+#         std_tables.scatter_(1, torch.unsqueeze(label, dim=-1), std_e_distance)
 
+#         kernal_metric = torch.exp(-1.0 * metric / std_tables)
+#         # Corresponding kernal metric calculating
+#         cor_metrics = []
+#         for i in range(kernal_metric.size(0)):
+#             label_i = int(label[i])
+#             distance = kernal_metric[i, label_i].item()
+#             cor_metrics.append(distance)
+#         avg_distance = get_average(cor_metrics)
+#         # var_distance = get_variance(cor_metrics)
+#         # print('The average corresponding metric is {:.4f}'.format(avg_distance))
+#         # print('The variance cor metric is {:.4f}'.format(std_e_distance))
+#         # print('The average corresponding eu metric is {:.4f}'.format(avg_e_distance))
+#         # print('The variance non cor metric eu is {:.4f}'.format(std_nocor_e_distance))
+#         if avg_distance < 0.5:
+#             avg_distance = 0.5
+#         self.scale = (1.0/avg_distance) * math.log(self.class_num-1.0) #(get_average(Bs))
+#         # Return data
+#         # train_logits = 3.0 * self.scale * kernal_metric
+#         train_logits = 4.0 * kernal_metric
 
-class PcheckNormalizedInnerProductWithReform(nn.Module):
-    def __init__(self, feature_dim, class_num, scale=20):
-        super(PcheckNormalizedInnerProductWithReform, self).__init__()
-        self.feature_dim = feature_dim
-        self.class_num = class_num
-        self.scale = math.sqrt(2.0) * math.log(self.class_num - 1)
-        self.weights = nn.Parameter(torch.FloatTensor(class_num, feature_dim))
-        nn.init.xavier_uniform_(self.weights)
-
-    def forward(self, feat, label):
-        # Unit vector for features
-        norm_features = torch.norm(feat, p=2, dim=-1, keepdim=True)
-        normalized_features = torch.div(feat, norm_features)
-        # Unit vector for weights
-        norm_weights = torch.norm(self.weights, p=2, dim=-1, keepdim=True)
-        normalized_weights = torch.div(self.weights, norm_weights)
-
-        # print('Avg weight norm is {:.6f}, avg feature norm i {:.6f}'.format((sum(norm_weights)/len(norm_weights)).item(), (sum(norm_features)/len(norm_features)).item() ) )
-        # Normalized inner product, or cosine
-        cos = torch.matmul(normalized_features, torch.transpose(normalized_weights, 0, 1))
-        
-        
-        logits = self.scale * cos
-
-
-        thetas = []
-        probs = F.softmax(logits).detach().cpu().numpy()
-        gt_probs = []
-        Bs = []
-        for i in range(cos.size(0)):
-            # Theta
-            label_i = int(label[i])
-            theta = math.acos(cos[i, label_i].data[0]) / math.pi * 180  # degree
-            thetas.append(theta)
-            # Prob
-            gt_prob = probs[i, label_i]
-            gt_probs.append(gt_prob)
-            # B
-            B = math.exp(logits[i, label_i].data[0]) * (1.0/gt_prob - 1.0)
-            Bs.append(B)
-        # Thetas
-        max_theta = max(thetas)
-        min_theta = min(thetas) 
-        avg_theta = get_average(thetas)
-        # Ps
-        max_p = max(gt_probs)
-        min_p = min(gt_probs)
-        avg_p = get_average(gt_probs)
-        # B_avg_thetas
-        B_avg = math.acos(math.log(get_average(Bs) / (self.class_num - 1)) / self.scale) / math.pi * 180 # Degree
-        
-        med_theta = mediannum(thetas)
-        med_theta_in_pi = (med_theta / 180.0) * math.pi
-        if med_theta_in_pi > math.pi/4.0:
-            med_theta_in_pi = math.pi/4.0
-        self.scale = (1.0/math.cos(med_theta_in_pi)) * math.log(get_average(Bs))
-        self.scale = 12.5
-        
-
-        # s = (1 / math.cos(med_theta_in_pi/2.0)) * math.log(self.class_num - 1)        
-        
-        
-        ###
-        print('The largest P and it\'s theta is {:.6f} and {:.6f}'.format(max_p, min_theta))
-        print('The smallest P and it\s theta is {:.6f} and {:.6f}'.format(min_p, max_theta))
-        print('The average P is {:.6f}'.format(avg_p))
-        print('The medi is {:.6f}'.format(med_theta))
-        print('B_degree is {:.4f}, scale is {:.4f}'.format(B_avg, self.scale))
-
-        ########Here
-        p_tables = torch.div(torch.clamp(cos.detach(), 0.000001, 1).detach(), F.softmax(logits).detach()).detach()
-
-
-        final_probs = p_tables * F.softmax(logits)
-        # return cos, logits, avg_p, min_p, max_p, B_avg, 0, 0
-        # return cos, torch.log(final_probs), avg_p, min_p, max_p, B_avg, 0, 0
-        return cos, final_probs, avg_p, min_p, max_p, B_avg, 0, 0
-
-
-
-
-class VarKernalMetricLogits(nn.Module):
-    def __init__(self, feature_dim, class_num):
-        super(VarKernalMetricLogits, self).__init__()
-        self.feature_dim = feature_dim
-        self.class_num = class_num
-        self.weights = nn.Parameter( torch.FloatTensor(class_num, feature_dim))
-        self.scale = 2.0 * math.log(self.class_num - 1)
-        nn.init.xavier_uniform_(self.weights)
-        
-    def forward(self, feat, label):
-        # Calculating metric
-        diff = torch.unsqueeze(self.weights, dim=0) - torch.unsqueeze(feat, dim=1)
-        diff = torch.mul(diff, diff)
-        metric = torch.sum(diff, dim=-1)
-        # Corresponding Euchlidean metric 
-        cor_eu_metrics = []
-        for i in range(metric.size(0)):
-            label_i = int(label[i])
-            distance = torch.sqrt(metric[i, label_i]).item()
-            cor_eu_metrics.append(distance)
-
-        # 计算对应类别的原是距离方差
-        std_e_distance = get_variance(cor_eu_metrics)
-
-        # 计算所有类别的原是距离方差
-        std_all_e_distance = torch.var(torch.sqrt(metric)).item()
-        # 计算非对应类别的原是距离方差
-        std_nocor_e_distance = (self.class_num * std_all_e_distance - std_e_distance) / (self.class_num - 1)
-
-        std_tables = torch.ones_like(metric) * std_nocor_e_distance
-        std_tables = Variable(std_tables).cuda()
-        std_tables.scatter_(1, torch.unsqueeze(label, dim=-1), std_e_distance)
-
-        kernal_metric = torch.exp(-1.0 * metric / std_tables)
-        # Corresponding kernal metric calculating
-        cor_metrics = []
-        for i in range(kernal_metric.size(0)):
-            label_i = int(label[i])
-            distance = kernal_metric[i, label_i].item()
-            cor_metrics.append(distance)
-        avg_distance = get_average(cor_metrics)
-        # var_distance = get_variance(cor_metrics)
-        # print('The average corresponding metric is {:.4f}'.format(avg_distance))
-        # print('The variance cor metric is {:.4f}'.format(std_e_distance))
-        # print('The average corresponding eu metric is {:.4f}'.format(avg_e_distance))
-        # print('The variance non cor metric eu is {:.4f}'.format(std_nocor_e_distance))
-        if avg_distance < 0.5:
-            avg_distance = 0.5
-        self.scale = (1.0/avg_distance) * math.log(self.class_num-1.0) #(get_average(Bs))
-        # Return data
-        # train_logits = 3.0 * self.scale * kernal_metric
-        train_logits = 4.0 * kernal_metric
-
-        return train_logits, torch.exp(-1.0 * metric), self.weights
-        # return train_logits
+#         return train_logits, torch.exp(-1.0 * metric), self.weights
+#         # return train_logits
