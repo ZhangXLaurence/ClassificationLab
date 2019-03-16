@@ -372,7 +372,7 @@ class ArcFaceInnerProduct(nn.Module):
             self.Threshholder = - math.cos(self.margin)
             self.out_indicator = 1
 
-    def forward(self, feat, label, return_ip=False):
+    def forward(self, feat, label):
         # Unit vector for features
         norm_features = torch.norm(feat, p=2, dim=-1, keepdim=True)
         normalized_features = torch.div(feat, norm_features)
@@ -384,7 +384,7 @@ class ArcFaceInnerProduct(nn.Module):
         ############################## Norm ##############################
         avg_w_norm = (sum(norm_weights)/len(norm_weights)).item()
         avg_x_norm = (sum(norm_features)/len(norm_features)).item()
-        print('Avg weight norm is {:.6f}, avg feature norm i {:.6f}'.format(avg_w_norm, avg_x_norm))
+        # print('Avg weight norm is {:.6f}, avg feature norm i {:.6f}'.format(avg_w_norm, avg_x_norm))
         ############################## Norm ##############################
         innerproduct_logits = torch.matmul(feat, torch.transpose(self.weights, 0, 1))
         # Calculate logits
@@ -416,11 +416,11 @@ class ArcFaceInnerProduct(nn.Module):
         # Calculate marginal logits
         margin_tables_ext *= self.out_indicator
         marginal_logits = self.scale * (torch.cos(torch.acos(cos) + margin_tables) + margin_tables_ext)
-        if return_ip:
-            return cos, marginal_logits, innerproduct_logits
-        else:
-            return cos, marginal_logits, avg_theta, min_theta, max_theta, stdv_theta, avg_w_norm, avg_x_norm
-
+        # if return_ip:
+        #     return cos, marginal_logits, innerproduct_logits
+        # else:
+        #     return cos, marginal_logits, avg_theta, min_theta, max_theta, stdv_theta, avg_w_norm, avg_x_norm
+        return marginal_logits, self.scale * cos, self.weights
 
 
 
