@@ -193,7 +193,7 @@ def main():
     # InnerProduct = MarginInnerProduct.MetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.KernalMetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.VarKernalMetricLogits(arg_FeatureDim, arg_classNum)
-    InnerProduct = MarginInnerProduct.ArcFaceInnerProduct(arg_FeatureDim, arg_classNum, scale=7.0, margin=0)
+    InnerProduct = MarginInnerProduct.CosFaceInnerProduct(arg_FeatureDim, arg_classNum, scale=7.0, margin=0.15)
     Model = torch.nn.DataParallel(TrainingModel(Inference, InnerProduct), arg_DeviceIds)
 
     # Losses and optimizers Defining

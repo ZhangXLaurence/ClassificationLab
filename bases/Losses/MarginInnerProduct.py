@@ -316,7 +316,7 @@ class CosFaceInnerProduct(nn.Module):
     CosFace: Large Margin Cosine Loss for Deep Face Recognition;
     Additive Margin Softmax for Face Verification.
     """
-    def __init__(self, feature_dim, class_num, scale=20.0, margin=0.3):
+    def __init__(self, feature_dim, class_num, scale=7.0, margin=0.15):
         super(CosFaceInnerProduct, self).__init__()
         self.feature_dim = feature_dim
         self.class_num = class_num
@@ -343,7 +343,7 @@ class CosFaceInnerProduct(nn.Module):
         # Calculate marginal logits
         marginal_logits = self.scale * (cos - margin_tables)
 
-        return logits, marginal_logits
+        return marginal_logits, logits, self.weights
     
 
 
