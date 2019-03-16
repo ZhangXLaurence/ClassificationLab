@@ -131,7 +131,7 @@ def Train(train_loader, model, criterion, optimizer, epoch, info_interval):
     labels = torch.cat(idx_loader, 0)
 
     # visualizeWithoutW(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
-    visualize(feat.data.cpu().numpy(), weights.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
+    # visualize(feat.data.cpu().numpy(), weights.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
     # visualize3D(feat.data.cpu().numpy(), labels.data.cpu().numpy(), epoch)
     
 
@@ -190,10 +190,10 @@ def main():
     # Innerproduct Construction
     
     # InnerProduct = MarginInnerProduct.MyLinear(arg_FeatureDim, arg_classNum)
-    # InnerProduct = MarginInnerProduct.MetricLogits(arg_FeatureDim, arg_classNum)
+    InnerProduct = MarginInnerProduct.MetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.KernalMetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.VarKernalMetricLogits(arg_FeatureDim, arg_classNum)
-    InnerProduct = MarginInnerProduct.CosFaceInnerProduct(arg_FeatureDim, arg_classNum, scale=7.0, margin=0.15)
+    # InnerProduct = MarginInnerProduct.CosFaceInnerProduct(arg_FeatureDim, arg_classNum, scale=7.0, margin=0.15)
     Model = torch.nn.DataParallel(TrainingModel(Inference, InnerProduct), arg_DeviceIds)
 
     # Losses and optimizers Defining
