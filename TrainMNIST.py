@@ -199,6 +199,7 @@ def main():
     # Losses and optimizers Defining
     # Softmax CrossEntropy
     SoftmaxLoss = nn.CrossEntropyLoss()
+    nllloss = nn.NLLLoss()
     if torch.cuda.is_available():
         SoftmaxLoss = SoftmaxLoss.cuda()
         Model = Model.cuda()
