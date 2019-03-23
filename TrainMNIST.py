@@ -167,7 +167,7 @@ def main():
     arg_TrainBatchSize = 128
     arg_TestBatchSize = 1024
 
-    arg_FeatureDim = 128
+    arg_FeatureDim = 32
     # arg_FeatureDim = 10
     arg_classNum = 10
     
@@ -202,7 +202,8 @@ def main():
     if torch.cuda.is_available():
         SoftmaxLoss = SoftmaxLoss.cuda()
         Model = Model.cuda()
-    criterion = [SoftmaxLoss]
+    # criterion = [SoftmaxLoss]
+    criterion = [NLLLoss]
     # Optimzer
     # Optimizer = torch.optim.SGD(Model.parameters(), lr=arg_BaseLr, momentum=arg_Momentum, weight_decay=arg_WeightDecay)
     Optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad,Model.parameters()), lr=arg_BaseLr, momentum=arg_Momentum, weight_decay=arg_WeightDecay)
