@@ -211,7 +211,7 @@ class KernalMetricLogits(nn.Module):
         diff = torch.unsqueeze(self.weights, dim=0) - torch.unsqueeze(feat, dim=1)
         diff = torch.mul(diff, diff)
         metric = torch.sum(diff, dim=-1)
-        kernal_metric = torch.exp(-1.0 * metric)
+        kernal_metric = torch.exp(-0.5 * metric)
 
         # scale = 6.0
 
