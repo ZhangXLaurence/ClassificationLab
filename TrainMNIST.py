@@ -204,7 +204,7 @@ def main():
         SoftmaxLoss = SoftmaxLoss.cuda()
         Model = Model.cuda()
     # criterion = [SoftmaxLoss]
-    criterion = [NLLLoss]
+    criterion = [nllloss]
     # Optimzer
     # Optimizer = torch.optim.SGD(Model.parameters(), lr=arg_BaseLr, momentum=arg_Momentum, weight_decay=arg_WeightDecay)
     Optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad,Model.parameters()), lr=arg_BaseLr, momentum=arg_Momentum, weight_decay=arg_WeightDecay)
