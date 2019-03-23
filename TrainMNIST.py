@@ -190,8 +190,8 @@ def main():
     # Innerproduct Construction
     
     # InnerProduct = MarginInnerProduct.MyLinear(arg_FeatureDim, arg_classNum)
-    InnerProduct = MarginInnerProduct.MetricLogits(arg_FeatureDim, arg_classNum)
-    # InnerProduct = MarginInnerProduct.KernalMetricLogits(arg_FeatureDim, arg_classNum)
+    # InnerProduct = MarginInnerProduct.MetricLogits(arg_FeatureDim, arg_classNum)
+    InnerProduct = MarginInnerProduct.KernalMetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.VarKernalMetricLogits(arg_FeatureDim, arg_classNum)
     # InnerProduct = MarginInnerProduct.CosFaceInnerProduct(arg_FeatureDim, arg_classNum, scale=7.0, margin=0.15)
     Model = torch.nn.DataParallel(TrainingModel(Inference, InnerProduct), arg_DeviceIds)

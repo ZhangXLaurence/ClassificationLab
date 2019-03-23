@@ -123,12 +123,12 @@ class MetricLogits(nn.Module):
         stdv_distance = get_stddev(distances)
         
         # print('Now stdv of distances is {:.4f}'.format(stdv_distance))
-        print('Now average distance is {:.2f}, max distance is {:.2f}, min distance is {:.2f}'.format(avg_distance, max_distance, min_distance))
+        # print('Now average distance is {:.2f}, max distance is {:.2f}, min distance is {:.2f}'.format(avg_distance, max_distance, min_distance))
         ############################## Theta ##############################
         # Calculate logits
         metric_mean = torch.mean(metric).item()
         metric_stdv = math.sqrt(torch.var(metric).item())
-        print('stdv of pos metric is {:.4f}'.format(stdv_distance))
+        # print('stdv of pos metric is {:.4f}'.format(stdv_distance))
         std_metric = metric - torch.mean(metric) #/ torch.var(metric) #metric_stdv
 
         max_stdmetric = torch.max(std_metric).item()
@@ -239,7 +239,7 @@ class KernalMetricLogits(nn.Module):
         if avg_distance < 0.5:
             avg_distance = 0.5
         self.scale = (1.0/avg_distance) * math.log(self.class_num-1.0) #(get_average(Bs))
-        self.scale = 4.0
+        self.scale = 1.0
         
         # Return data
         valuation_logits = self.scale * kernal_metric
